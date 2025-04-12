@@ -16,27 +16,41 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       <main class="main-content">
         <nav class="navbar">
           <ul>
-            <!-- Updated Navigation Links -->
+            <!-- Updated Navigation Links with Create Character link -->
             <li><a routerLink="/players">Players</a></li>
             <li><a routerLink="/signin">Sign In</a></li>
-            <li><a routerLink="/create-character">Create Character</a></li>
+            <li><a routerLink="/create-character">Create Character</a></li> <!-- Link to Create Character -->
             <li><a routerLink="/create-guild">Create Guild</a></li>
             <li><a routerLink="/character-faction">Character Faction</a></li>
           </ul>
         </nav>
 
+        <!-- Content Section for Players -->
         <section class="content">
-          <router-outlet />
+          <h2>Players</h2>
+          <p>Here are the list of players in the game:</p>
+
+          <!-- Display characters in rows of 3 per row using CSS grid -->
+          <div class="characters-list">
+            <div *ngFor="let character of characters" class="character-card" [attr.data-testid]="'character-' + character.name">
+              <h3>{{ character.name }}</h3>
+              <p><strong>Gender:</strong> {{ character.gender }}</p>
+              <p><strong>Class:</strong> {{ character.class }}</p>
+              <p><strong>Faction:</strong> {{ character.faction }}</p>
+              <p><strong>Starting Location:</strong> {{ character.startingLocation }}</p>
+              <p><strong>Fun Fact:</strong> {{ character.funFact }}</p>
+            </div>
+          </div>
         </section>
       </main>
 
       <!-- Footer Section -->
       <footer class="footer">
         <nav class="footer-nav">
-          <!-- Updated Footer Links -->
+          <!-- Footer Links with Create Character link -->
           <a routerLink="/players">Players</a> |
           <a routerLink="/signin">Sign In</a> |
-          <a routerLink="/create-character">Create Character</a> |
+          <a routerLink="/create-character">Create Character</a> | <!-- Footer Link to Create Character -->
           <a routerLink="/create-guild">Create Guild</a> |
           <a routerLink="/character-faction">Character Faction</a>
         </nav>
@@ -75,6 +89,7 @@ import { RouterLink, RouterOutlet } from '@angular/router';
         background-color: #000000;
         color: #FFFFFF;
         text-align: center;
+        padding: 20px;
       }
 
       .banner-img {
@@ -117,34 +132,3 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 
       .navbar a {
         text-decoration: none;
-        color: inherit;
-      }
-
-      /* Content Section */
-      .content {
-        flex: 1;
-        padding: 20px;
-        font-family: 'Merriweather', serif;
-      }
-
-      /* Footer Section */
-      .footer {
-        background-color: #000000;
-        color: #FFFFFF;
-        text-align: center;
-        padding: 20px;
-        font-family: 'Lato', sans-serif;
-      }
-
-      .footer a {
-        color: #FFFFFF;
-        text-decoration: none;
-      }
-
-      .footer a:hover {
-        text-decoration: underline;
-      }
-    `
-  ]
-})
-export class AppComponent {}
