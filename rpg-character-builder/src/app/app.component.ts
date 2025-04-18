@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink],
   template: `
     <div class="wrapper">
       <!-- Banner Section -->
@@ -16,119 +15,109 @@ import { RouterLink, RouterOutlet } from '@angular/router';
       <main class="main-content">
         <nav class="navbar">
           <ul>
-            <!-- Updated Navigation Links with Create Character link -->
             <li><a routerLink="/players">Players</a></li>
-            <li><a routerLink="/signin">Sign In</a></li>
-            <li><a routerLink="/create-character">Create Character</a></li> <!-- Link to Create Character -->
-            <li><a routerLink="/create-guild">Create Guild</a></li>
-            <li><a routerLink="/character-faction">Character Faction</a></li>
+            <li *ngIf="!isAuthenticated"><a routerLink="/signin">Sign In</a></li>
+            <li *ngIf="isAuthenticated"><a routerLink="/create-character">Create Character</a></li>
+            <li *ngIf="isAuthenticated"><a routerLink="/create-guild">Create Guild</a></li>
+            <li *ngIf="isAuthenticated"><a routerLink="/character-faction">Character Faction</a></li>
           </ul>
         </nav>
 
-        <!-- Content Section for Players -->
+        <!-- Content Section -->
         <section class="content">
-          <h2>Players</h2>
-          <p>Here are the list of players in the game:</p>
-
-          <!-- Display characters in rows of 3 per row using CSS grid -->
-          <div class="characters-list">
-            <div *ngFor="let character of characters" class="character-card" [attr.data-testid]="'character-' + character.name">
-              <h3>{{ character.name }}</h3>
-              <p><strong>Gender:</strong> {{ character.gender }}</p>
-              <p><strong>Class:</strong> {{ character.class }}</p>
-              <p><strong>Faction:</strong> {{ character.faction }}</p>
-              <p><strong>Starting Location:</strong> {{ character.startingLocation }}</p>
-              <p><strong>Fun Fact:</strong> {{ character.funFact }}</p>
-            </div>
-          </div>
+          <h2>Welcome to RPG Character Builder</h2>
+          <p *ngIf="!isAuthenticated">Please sign in to access the game features.</p>
+          <p *ngIf="isAuthenticated">Welcome {{ userEmail }}!</p>
         </section>
       </main>
 
       <!-- Footer Section -->
       <footer class="footer">
         <nav class="footer-nav">
-          <!-- Footer Links with Create Character link -->
           <a routerLink="/players">Players</a> |
-          <a routerLink="/signin">Sign In</a> |
-          <a routerLink="/create-character">Create Character</a> | <!-- Footer Link to Create Character -->
-          <a routerLink="/create-guild">Create Guild</a> |
-          <a routerLink="/character-faction">Character Faction</a>
+          <a routerLink="/signin" *ngIf="!isAuthenticated">Sign In</a> |
+          <a routerLink="/create-character" *ngIf="isAuthenticated">Create Character</a> |
+          <a routerLink="/create-guild" *ngIf="isAuthenticated">Create Guild</a> |
+          <a routerLink="/character-faction" *ngIf="isAuthenticated">Character Faction</a>
         </nav>
+
+        <div *ngIf="isAuthenticated">
+          <button (click)="onSignOut()">Sign Out</button>
+        </div>
+
         <p>&copy; 2025 RPG Character Builder</p>
       </footer>
     </div>
   `,
-  styles: [
-    `
-      /* Import Google Fonts */
-      @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@700&display=swap');
+  styles: [`
+    body, html {
+      margin: 0;
+      padding: 0;
+    }
 
-      /* Reset margin, padding, and borders */
-      body, header, nav, main, section, footer, img, figure, figcaption, div, ul {
-        margin: 0;
-        padding: 0;
-        border: 0;
-      }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+      background-color: #ffffff;
+    }
 
-      body {
-        height: 100%;
-      }
+    .banner {
+      background-color: #000;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
 
-      .wrapper {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        margin: 0 auto;
-        width: 75%;
-        background-color: #FFFFFF;
-        color: #000000;
-      }
+    .navbar {
+      padding: 10px;
+      background-color: #333;
+    }
 
-      /* Banner Section */
-      .banner {
-        background-color: #000000;
-        color: #FFFFFF;
-        text-align: center;
-        padding: 20px;
-      }
+    .navbar a {
+      color: white;
+      margin-right: 10px;
+      text-decoration: none;
+    }
 
-      .banner-img {
-        max-width: 100%;
-        height: auto;
-      }
+    .navbar a:hover {
+      text-decoration: underline;
+    }
 
-      /* Main Content Section */
-      .main-content {
-        display: flex;
-        flex: 1;
-      }
+    .footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
 
-      .navbar {
-        flex: 0 0 200px;
-        padding: 20px;
-      }
+    .footer-nav a {
+      color: white;
+      margin: 0 5px;
+      text-decoration: none;
+    }
 
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Montserrat', sans-serif;
-      }
+    .footer-nav a:hover {
+      text-decoration: underline;
+    }
+  `]
+})
+export class AppComponent implements OnInit {
+  isAuthenticated = false;
+  userEmail: string = '';
 
-      .navbar ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
+  constructor(private authService: AuthService) {}
 
-      .navbar li {
-        padding: 8px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        font-family: 'Lato', sans-serif;
-      }
+  ngOnInit(): void {
+    this.authService.getAuthState().subscribe(auth => {
+      this.isAuthenticated = auth;
+      this.userEmail = auth ? this.authService.getUserEmail() : '';
+    });
+  }
 
-      .navbar li:hover {
-        background-color: #F2F2F2;
-        color: #0056B3;
-        cursor: pointer;
-      }
-
-      .navbar a {
-        text-decoration: none;
+  onSignOut(): void {
+    this.authService.signout();
+    console.log('User signed out');
+  }
+}
