@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +16,11 @@ import { Observable } from 'rxjs';
           <ul>
             <li><a routerLink="/players">Players</a></li>
             <li *ngIf="!isAuthenticated"><a routerLink="/signin">Sign In</a></li>
-            <li *ngIf="isAuthenticated"><a routerLink="/create-character">Create Character</a></li>
-            <li *ngIf="isAuthenticated"><a routerLink="/create-guild">Create Guild</a></li>
-            <li *ngIf="isAuthenticated"><a routerLink="/character-faction">Character Faction</a></li>
+            <ng-container *ngIf="isAuthenticated">
+              <li><a routerLink="/create-character">Create Character</a></li>
+              <li><a routerLink="/create-guild">Create Guild</a></li>
+              <li><a routerLink="/character-faction">Character Faction</a></li>
+            </ng-container>
           </ul>
         </nav>
 
@@ -35,13 +36,15 @@ import { Observable } from 'rxjs';
       <footer class="footer">
         <nav class="footer-nav">
           <a routerLink="/players">Players</a> |
-          <a routerLink="/signin" *ngIf="!isAuthenticated">Sign In</a> |
-          <a routerLink="/create-character" *ngIf="isAuthenticated">Create Character</a> |
-          <a routerLink="/create-guild" *ngIf="isAuthenticated">Create Guild</a> |
-          <a routerLink="/character-faction" *ngIf="isAuthenticated">Character Faction</a>
+          <a *ngIf="!isAuthenticated" routerLink="/signin">Sign In</a> |
+          <ng-container *ngIf="isAuthenticated">
+            <a routerLink="/create-character">Create Character</a> |
+            <a routerLink="/create-guild">Create Guild</a> |
+            <a routerLink="/character-faction">Character Faction</a>
+          </ng-container>
         </nav>
 
-        <div *ngIf="isAuthenticated">
+        <div *ngIf="isAuthenticated" style="margin-top: 10px;">
           <button (click)="onSignOut()">Sign Out</button>
         </div>
 
@@ -75,9 +78,21 @@ import { Observable } from 'rxjs';
       background-color: #333;
     }
 
+    .navbar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .navbar li {
+      margin: 0 10px;
+    }
+
     .navbar a {
       color: white;
-      margin-right: 10px;
       text-decoration: none;
     }
 
@@ -85,11 +100,20 @@ import { Observable } from 'rxjs';
       text-decoration: underline;
     }
 
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
     .footer {
       background-color: #333;
       color: white;
       text-align: center;
       padding: 10px;
+    }
+
+    .footer-nav {
+      margin-bottom: 10px;
     }
 
     .footer-nav a {
@@ -100,6 +124,18 @@ import { Observable } from 'rxjs';
 
     .footer-nav a:hover {
       text-decoration: underline;
+    }
+
+    button {
+      padding: 8px 16px;
+      background-color: #cc0000;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #a30000;
     }
   `]
 })
