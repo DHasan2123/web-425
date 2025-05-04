@@ -63,6 +63,9 @@ interface Guild {
           </li>
         </ul>
       </div>
+      <div *ngIf="createdGuilds.length === 0">
+        <p>No guilds created yet.</p>
+      </div>
     </div>
   `,
   styles: [`
@@ -118,6 +121,11 @@ interface Guild {
       padding: 10px;
       margin-bottom: 10px;
       border-radius: 4px;
+    }
+    p {
+      text-align: center;
+      font-style: italic;
+      color: gray;
     }
   `]
 })
