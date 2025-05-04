@@ -7,53 +7,56 @@ import { Component } from '@angular/core';
       <h2>Create Character</h2>
       <p>Fill in the details to create your character.</p>
       <form #characterForm="ngForm" (ngSubmit)="onSubmit()">
-        <!-- Character Name -->
-        <input type="text" name="name" [(ngModel)]="character.name" placeholder="Character Name" required style="margin: 5px; padding: 10px;">
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="character.name"
+          placeholder="Character Name"
+          required
+        />
 
-        <!-- Gender Select -->
-        <select name="gender" [(ngModel)]="character.gender" required style="margin: 5px; padding: 10px;">
+        <select name="gender" [(ngModel)]="character.gender" required>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
           <option value="Other">Other</option>
         </select>
 
-        <!-- Class Select -->
-        <select name="class" [(ngModel)]="character.class" required style="margin: 5px; padding: 10px;">
+        <select name="class" [(ngModel)]="character.class" required>
           <option value="Warrior">Warrior</option>
           <option value="Mage">Mage</option>
           <option value="Rogue">Rogue</option>
         </select>
 
-        <!-- Submit Button -->
-        <button type="submit" style="padding: 10px;">Create Character</button>
+        <!-- Additional Fields -->
+        <input
+          type="text"
+          name="faction"
+          [(ngModel)]="character.faction"
+          placeholder="Faction"
+        />
+        <input
+          type="text"
+          name="startingLocation"
+          [(ngModel)]="character.startingLocation"
+          placeholder="Starting Location"
+        />
+        <input
+          type="text"
+          name="funFact"
+          [(ngModel)]="character.funFact"
+          placeholder="Fun Fact"
+        />
+
+        <button type="submit">Create Character</button>
       </form>
 
       <!-- Display Created Characters -->
       <h3>Created Characters:</h3>
-      <div *ngFor="let character of characters" class="character-card" [attr.data-testid]="'character-' + character.name">
-        <h3>{{ character.name }}</h3>
-        <p><strong>Gender:</strong> {{ character.gender }}</p>
-        <p><strong>Class:</strong> {{ character.class }}</p>
-        <p><strong>Faction:</strong> {{ character.faction }}</p>
-        <p><strong>Starting Location:</strong> {{ character.startingLocation }}</p>
-        <p><strong>Fun Fact:</strong> {{ character.funFact }}</p>
-        <p><strong>ID:</strong> {{ character.id }}</p> <!-- Display Random ID -->
-      </div>
+      <app-character-list [characters]="characters"></app-character-list>
     </div>
   `,
   styles: [
     `
-      .character-card {
-        border: 1px solid #ccc;
-        padding: 15px;
-        width: 200px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 8px;
-        background-color: #f9f9f9;
-        margin: 10px;
-        text-align: left;
-      }
-
       form {
         display: flex;
         flex-direction: column;
@@ -61,7 +64,9 @@ import { Component } from '@angular/core';
         margin-bottom: 20px;
       }
 
-      input, select, button {
+      input,
+      select,
+      button {
         width: 250px;
         margin: 5px;
         padding: 10px;
@@ -77,8 +82,8 @@ import { Component } from '@angular/core';
       button:hover {
         background-color: darkcyan;
       }
-    `
-  ]
+    `,
+  ],
 })
 export class CreateCharacterComponent {
   character = {
@@ -90,26 +95,23 @@ export class CreateCharacterComponent {
     funFact: ''
   };
 
-  characters = [];
+  characters: any[] = [];
 
-  // Generate random character ID between 1 and 1000
   generateRandomId(): number {
-    return Math.floor(Math.random() * 1000) + 1; // Random ID between 1 and 1000
+    return Math.floor(Math.random() * 1000) + 1;
   }
 
-  // Handle form submission
-  onSubmit() {
+  onSubmit(): void {
     const newCharacter = {
       ...this.character,
-      id: this.generateRandomId()  // Generate and assign a random ID
+      id: this.generateRandomId()
     };
 
-    this.characters.push(newCharacter); // Add new character to array
-    this.resetForm(); // Reset form after submitting
+    this.characters.push(newCharacter);
+    this.resetForm();
   }
 
-  // Reset the form fields
-  resetForm() {
+  resetForm(): void {
     this.character = {
       name: '',
       gender: 'Male',
