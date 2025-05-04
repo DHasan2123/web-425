@@ -78,4 +78,44 @@ describe('CreateGuildComponent', () => {
     expect(component.createdGuilds[0].guildName).toBe('Warriors');
     expect(component.createdGuilds[0].description).toBe('A group of skilled warriors');
   });
+
+  // Test case 1: Should display guilds correctly in the guild list
+  it('should display guilds in the created guild list', () => {
+    fixture.detectChanges();
+
+    // Simulate creating a guild
+    const form = component.guildForm;
+    form.controls['guildName'].setValue('Warriors');
+    form.controls['description'].setValue('A group of skilled warriors');
+    form.controls['type'].setValue('Competitive');
+    form.controls['acceptTerms'].setValue(true);
+    form.controls['notificationPreference'].setValue('Email');
+
+    component.onSubmit();
+
+    fixture.detectChanges();
+
+    // Check if the newly created guild is displayed in the list
+    const guildListItems = fixture.debugElement.queryAll(By.css('.guild-list ul li'));
+    expect(guildListItems.length).toBeGreaterThan(0);  // Ensure there's at least one guild
+    expect(guildListItems[0].nativeElement.textContent).toContain('Warriors');  // Check if the guild name is displayed
+  });
+
+  // Test case 2: Should display a message when there are no created guilds
+  it('should display a message when no guilds are created', () => {
+    fixture.detectChanges();
+
+    const guildList = fixture.debugElement.query(By.css('.guild-list'));
+
+    // Initially, no guilds should be created, so there should be a message displayed
+    expect(guildList.nativeElement.textContent).toContain('No guilds created yet.');
+  });
+
+  // Test case 3: Should display guilds in the created guild list
+  it('should display a message when there are no created guilds', () => {
+    fixture.detectChanges();
+    const guildList = fixture.debugElement.query(By.css('.guild-list'));
+    expect(guildList).toBeNull(); // It should be null or not rendered because no guilds are created
+  });
+
 });
