@@ -1,27 +1,33 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component'; // Import the root component
-import { CreateCharacterComponent } from './create-character/create-character.component'; // Import CreateCharacter component
-import { PlayersComponent } from './players/players.component'; // Import PlayersComponent
-import { SigninComponent } from './signin/signin.component'; // Import SigninComponent
-import { CreateGuildComponent } from './create-guild/create-guild.component'; // Import CreateGuildComponent
-import { CharacterFactionComponent } from './character-faction/character-faction.component'; // Import CharacterFactionComponent
-import { AppRoutingModule } from './app-routing.module'; // Import routing module for handling routes
+import { AppComponent } from './app.component'; // Root component
+import { CreateCharacterComponent } from './create-character/create-character.component';
+import { PlayersComponent } from './players/players.component';
+import { SigninComponent } from './signin/signin.component';
+import { CreateGuildComponent } from './create-guild/create-guild.component';
+import { CharacterFactionComponent } from './character-faction/character-faction.component';
+import { AppRoutingModule } from './app-routing.module';
+
+// ✅ Newly added imports
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
-    AppComponent,                // Declare the root AppComponent
-    CreateCharacterComponent,    // Declare CreateCharacterComponent
-    PlayersComponent,            // Declare PlayersComponent
-    SigninComponent,             // Declare SigninComponent
-    CreateGuildComponent,        // Declare CreateGuildComponent
-    CharacterFactionComponent    // Declare CharacterFactionComponent
+    AppComponent,
+    CreateCharacterComponent,
+    PlayersComponent,
+    SigninComponent,
+    CreateGuildComponent,
+    CharacterFactionComponent
   ],
   imports: [
-    BrowserModule,               // Required for every Angular app
-    AppRoutingModule             // Import the routing module for handling routing logic
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,           // ✅ Enables [(ngModel)] for forms
+    HttpClientModule       // ✅ Enables HttpClient for API requests
   ],
   providers: [],
-  bootstrap: [AppComponent]      // Set AppComponent as the bootstrap component
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
